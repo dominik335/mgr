@@ -14,12 +14,11 @@ from keras.layers import Dense
 import numpy as np
 import os
 
-if True:
+if False:
     import tensorflow as tf
     config = tf.ConfigProto()
     config.gpu_options.per_process_gpu_memory_fraction = 0.5
-    set_session(tf.Session(config=config))
-
+    session = tf.Session(config=config)
 
 timesteps = 60
 no_features = 60
