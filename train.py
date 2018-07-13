@@ -21,13 +21,11 @@ if True:
     set_session(tf.Session(config=config))
 
 
-timesteps = 20
+timesteps = 60
 no_features = 60
 batch = 50
 dropout_rate = 0.25
-epochs = 40
-values = np.load("dataset_b_cla.npy")
-
+epochs = 1#40
 input_cols = timesteps * no_features
 
 
@@ -43,7 +41,7 @@ if False:
 else:
     #FIXED SIZE
     hidden_layers = 4
-    neurons = [1200, 1800, 1200, 600]
+    neurons = [input_cols*3, input_cols*4, input_cols*3, input_cols*2]
 
 
 model = Sequential()
@@ -70,44 +68,39 @@ checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_
 values = np.array([]).reshape(0, no_features)
 print(values)
 
-
-
 i = 0
+dataset_path = "/home/dsabat/datasety/"
 
+path, dirs, files = next(os.walk(dataset_path))
+file_count = len(files)
 
-indir = '/home/dominik/Pulpit/MAGISTERKA/midi/midiPopover/'
-for root, dirs, filenames in os.walk(indir):
-    for f in filenames: ################ FOR every file in dataset
-        print(i + f)
-        i = 1 + i
+for f in range(0,file_count): ################ FOR every file in dataset
+    values = np.load(dataset_path+str(f)+".npy")
+    if values.size == 0:
+        continue
 
-        values = np.load("dataset_b_cla.npy")
-        if values.size == 0:
-            continue
+    # frame as supervised learning
+    reframed = series_to_supervised(values, timesteps, 1)
 
-            # frame as supervised learning
-        reframed = series_to_supervised(values, timesteps, 1)
+    # split into train and test sets
+    values = reframed.values
+    trainPortion = int(0.8 * len(values))
 
+    train = values[:trainPortion, :]
+    test = values[trainPortion:, :]
+    print(train.shape)
+    # split into input and outputs
+    train_X, train_y = train[:, :input_cols], train[:, -no_features:]
+    test_X, test_y = test[:, :input_cols], test[:, -no_features:]
 
+    train_X = train_X.reshape((train_X.shape[0], timesteps, no_features))
+    test_X = test_X.reshape((test_X.shape[0], timesteps, no_features))
 
-        # split into train and test sets
-        values = reframed.values
-        trainPortion = int(0.8 * len(values))
-
-        train = values[:trainPortion, :]
-        test = values[trainPortion:, :]
-        print(train.shape)
-        # split into input and outputs
-        train_X, train_y = train[:, :input_cols], train[:, -no_features:]
-        test_X, test_y = test[:, :input_cols], test[:, -no_features:]
-
-        train_X = train_X.reshape((train_X.shape[0], timesteps, no_features))
-        test_X = test_X.reshape((test_X.shape[0], timesteps, no_features))
-
-        print(test_X.shape, test_y.shape)
-        history = model.fit(train_X, train_y, epochs=epochs, batch_size=batch, validation_data=(test_X, test_y),
-                            verbose=1, shuffle=True, callbacks=[checkpoint])
-        f = open('history_of_training', 'a')
-        f.write(history)
-        f.close()
+    print(test_X.shape, test_y.shape)
+    history = model.fit(train_X, train_y, epochs=epochs, batch_size=batch, validation_data=(test_X, test_y),
+                        verbose=1, shuffle=True, callbacks=[checkpoint])
+    # plot history
+    f = open('history_of_training', 'a')
+    f.write(history)
+    f.close()
 model.save('mymodel.h5')
