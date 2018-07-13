@@ -62,10 +62,12 @@ else:
 filepath = "BestGRUWeights.h5"  # Best weights for sampling will be saved here.
 checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
-values = np.array([]).reshape(0, no_features)
+#values = np.array([]).reshape(0, no_features)
 
 i = 0
 dataset_path = "/home/dsabat/datasety/"
+
+print("Scanning files...")
 
 path, dirs, files = next(os.walk(dataset_path))
 file_count = len(files)
