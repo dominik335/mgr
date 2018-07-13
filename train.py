@@ -21,11 +21,11 @@ if False:
     config.gpu_options.per_process_gpu_memory_fraction = 0.8
     session = tf.Session(config=config)
 
-timesteps = 40
+timesteps = 4 #0
 no_features = 60
-batch = 30
+batch = 3#0
 dropout_rate = 0.2
-epochs = 30
+epochs = 3#0
 input_cols = timesteps * no_features
 
 if False:
@@ -38,7 +38,7 @@ if False:
 else:
     #FIXED SIZE
     hidden_layers = 4
-    neurons = [input_cols*2, input_cols*3, input_cols*2, input_cols*1.5]
+    neurons = [input_cols*2, input_cols*3, input_cols*2, int(input_cols*1.5)]
 
 print("Builing model...")
 model = Sequential()
