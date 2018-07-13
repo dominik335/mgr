@@ -38,7 +38,7 @@ if False:
 else:
     #FIXED SIZE
     hidden_layers = 4
-    neurons = [input_cols*3, input_cols*4, input_cols*3, input_cols*2]
+    neurons = [input_cols*2, input_cols*3, input_cols*2, input_cols*1.5]
 
 print("Builing model...")
 model = Sequential()
