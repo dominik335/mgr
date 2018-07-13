@@ -6,7 +6,8 @@ from methods import *
 
 no_features = 60
 values = np.array([]).reshape(0, no_features)
-i,j = 0
+i = 0
+j = 0
 indir = '/home/dsabat/blog/classical/'
 for root, dirs, filenames in os.walk(indir):
     for f in filenames:
