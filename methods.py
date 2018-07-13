@@ -1,6 +1,6 @@
 import numpy as np
 import pretty_midi
-
+from pandas import DataFrame
 
 def piano_roll_to_pretty_midi(piano_roll, fs=100, program=0):
     '''Convert a Piano Roll array into a PrettyMidi object
