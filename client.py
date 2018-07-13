@@ -18,7 +18,6 @@ import os
 
 from pandas import DataFrame
 from pandas import concat
-import pretty_midi
 import tensorflow as tf
 
 #config = tf.ConfigProto()
