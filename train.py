@@ -21,15 +21,12 @@ if False:
     config.gpu_options.per_process_gpu_memory_fraction = 0.8
     session = tf.Session(config=config)
 
-timesteps = 60
+timesteps = 40
 no_features = 60
-batch = 50
+batch = 30
 dropout_rate = 0.2
-epochs = 40
+epochs = 30
 input_cols = timesteps * no_features
-
-
-# trainer
 
 if False:
     hidden_layers = int(input("\nNumber of Hidden Layers (Minimum 1): "))
@@ -43,7 +40,7 @@ else:
     hidden_layers = 4
     neurons = [input_cols*3, input_cols*4, input_cols*3, input_cols*2]
 
-
+print("Builing model...")
 model = Sequential()
 if hidden_layers == 1:
     model.add(GRU(neurons[0], input_shape=(timesteps, no_features), stateful=False, reset_after=False))
@@ -66,7 +63,6 @@ filepath = "BestGRUWeights.h5"  # Best weights for sampling will be saved here.
 checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
 values = np.array([]).reshape(0, no_features)
-print(values)
 
 i = 0
 dataset_path = "/home/dsabat/datasety/"
@@ -75,12 +71,16 @@ path, dirs, files = next(os.walk(dataset_path))
 file_count = len(files)
 
 for f in range(0,file_count): ################ FOR every file in dataset
+    print("Processing " + str(f) + "out of " + str(file_count))
+
     values = np.load(dataset_path+str(f)+".npy")
     if values.size == 0:
         continue
+    print("Loaded file...")
 
     # frame as supervised learning
     reframed = series_to_supervised(values, timesteps, 1)
+    print("Reframed file...")
 
     # split into train and test sets
     values = reframed.values
@@ -95,8 +95,8 @@ for f in range(0,file_count): ################ FOR every file in dataset
 
     train_X = train_X.reshape((train_X.shape[0], timesteps, no_features))
     test_X = test_X.reshape((test_X.shape[0], timesteps, no_features))
+    print("Splitted data...")
 
-    print(test_X.shape, test_y.shape)
     history = model.fit(train_X, train_y, epochs=epochs, batch_size=batch, validation_data=(test_X, test_y),
                         verbose=1, shuffle=True, callbacks=[checkpoint])
     # plot history
