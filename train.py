@@ -21,11 +21,11 @@ if False:
     config.gpu_options.per_process_gpu_memory_fraction = 0.8
     session = tf.Session(config=config)
 
-timesteps = 6
+timesteps = 60
 no_features = 60
 batch = 50
-dropout_rate = 0.25
-epochs = 1#40
+dropout_rate = 0.2
+epochs = 40
 input_cols = timesteps * no_features
 
 
