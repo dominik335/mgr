@@ -83,8 +83,8 @@ def convert(path):
     timeres = 20
     midi_data = pretty_midi.PrettyMIDI(path)
     roll = midi_data.get_piano_roll(fs=timeres)
-    roll= np.where(roll>0 ,1,-1)
-    while(np.all(roll[:,0] == -1)): #drop leading "0" columns
+    roll= np.where(roll>0 ,1,0)
+    while(np.all(roll[:,0] == 0)): #drop leading "0" columns
         roll = np.delete(roll,0,1)
     return np.transpose(roll[40:100]) #pitch LtR, time UtD
 

@@ -28,7 +28,9 @@ dropout_rate = 0.2
 epochs = 30
 input_cols = timesteps * no_features
 
-if False:
+var_size = 0
+
+if var_size:
     hidden_layers = int(input("\nNumber of Hidden Layers (Minimum 1): "))
     neurons = []
     if hidden_layers == 0:
@@ -39,6 +41,8 @@ else:
     #FIXED SIZE
     hidden_layers = 4
     neurons = [input_cols*2, input_cols*3, input_cols*2, int(input_cols*1.5)]
+    neurons = [1500, 2000,2500, 10000]
+    neurons = [15, 20,25, 10]
 
 print("Builing model...")
 model = Sequential()
@@ -55,7 +59,7 @@ else:
             model.add(GRU(neurons[i], stateful=False, return_sequences=True))
         model.add(Dropout(dropout_rate))
 
-    model.add(Dense(no_features, activation='tanh'))
+    model.add(Dense(no_features, activation='sigmoid'))
     model.compile(loss='binary_crossentropy', optimizer='adam')
     model.summary()
 
@@ -71,6 +75,10 @@ print("Scanning files...")
 
 path, dirs, files = next(os.walk(dataset_path))
 file_count = len(files)
+
+class_weight = {0: 1.,
+                1: 50.}
+
 
 for f in range(0,file_count): ################ FOR every file in dataset
     print("Processing " + str(f) + "out of " + str(file_count))
@@ -100,7 +108,7 @@ for f in range(0,file_count): ################ FOR every file in dataset
     print("Splitted data...")
 
     history = model.fit(train_X, train_y, epochs=epochs, batch_size=batch, validation_data=(test_X, test_y),
-                        verbose=1, shuffle=True, callbacks=[checkpoint])
+                        verbose=1, shuffle=True, callbacks=[checkpoint], class_weight=class_weight)
     # plot history
     f = open('history_of_training', 'a')
     f.write(history)
