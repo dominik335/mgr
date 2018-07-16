@@ -9,6 +9,8 @@ values = np.array([]).reshape(0, no_features).astype('boolean')
 i = 0
 j = 0
 indir = '/home/dsabat/blog/classical/'
+indir = '/home/dsabat/danekom/clementi/'                                                                              │+-----------------------------------------------------------------------------+
+
 for root, dirs, filenames in os.walk(indir):
     for f in filenames:
         if i % 40 == 0:
