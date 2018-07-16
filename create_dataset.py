@@ -5,11 +5,11 @@ import os
 from methods import *
 
 no_features = 60
-values = np.array([]).reshape(0, no_features).astype('boolean')
+values = np.array([]).reshape(0, no_features) #.astype('boolean')
 i = 0
 j = 0
 indir = '/home/dsabat/blog/classical/'
-indir = '/home/dsabat/danekom/clementi/'                                                                              │+-----------------------------------------------------------------------------+
+indir = '/home/dsabat/danekom/clementi/'
 
 for root, dirs, filenames in os.walk(indir):
     for f in filenames:
@@ -24,3 +24,5 @@ for root, dirs, filenames in os.walk(indir):
             values=None
             values = np.array([]).reshape(0, no_features)
 
+np.save("/home/dsabat/datasety/" + str(j), values)
+j=j+1
