@@ -5,7 +5,7 @@ import os
 from methods import *
 
 no_features = 60
-values = np.array([]).reshape(0, no_features)
+values = np.array([]).reshape(0, no_features).astype('boolean')
 i = 0
 j = 0
 indir = '/home/dsabat/blog/classical/'
