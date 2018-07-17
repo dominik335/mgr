@@ -41,7 +41,7 @@ else:
     #FIXED SIZE
     hidden_layers = 4
     neurons = [input_cols*2, input_cols*3, input_cols*2, int(input_cols*1.5)]
-    neurons = [1500, 2000,2500, 10000]
+    neurons = [1500, 2000, 2500, 10000]
     neurons = [15, 20,25, 10]
 
 print("Builing model...")
