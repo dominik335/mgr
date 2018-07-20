@@ -26,8 +26,6 @@ import tensorflow as tf
 
 from methods import *
 
-pred_tres = 0.2
-
 # client app
 
 steps = 3  # of simulation
@@ -36,7 +34,7 @@ no_features = 60
 input_cols = timesteps * no_features
 
 dir_model = "/home/dominik/Pulpit/MAGISTERKA/pobrane wagi/6/"
-midi_path = '/home/dominik/Pulpit/MAGISTERKA/testoweMidiInput/4.midi'
+midi_path = '/home/dominik/Pulpit/MAGISTERKA/testoweMidiInput/3.midi'
 
 weight_path = dir_model + 'mymodel.h5'
 weight_path = dir_model + 'BestGRUWeights.h5'
@@ -50,9 +48,11 @@ model.summary()
 
 #while(pred_input.shape[0]<timesteps):
 pred_input=np.vstack((pred_input,pred_input))
+pred_input=np.vstack((pred_input,pred_input))
+pred_input=np.vstack((pred_input,pred_input))
 
 predictions = []
-predictions = np.array(predictions).astype('float32')
+predictions = np.array(predictions).astype('float16')
 predictions = predictions.reshape(predictions.shape[0], no_features)
 np.set_printoptions(threshold=np.nan)
 
@@ -63,13 +63,13 @@ for i in range(1, steps):
     inppred = values[-timesteps:, :]
     y = model.predict(inppred.reshape(inppred.shape[0] + 1, timesteps, no_features))
     #y = np.where(y > pred_tres, 1, 0)
-    print(y)
+    #print(y)
     predictions = np.concatenate((predictions, y.reshape(y.shape[0], no_features)), axis=0)
     pred_input = np.concatenate(((pred_input.reshape(pred_input.shape[0], no_features)), y.reshape(y.shape[0], no_features)), axis=0)
 out=predictions
 
 if len(predictions) > 0:
-    # print(out)
+    print(  np.array2string(np.where(predictions>=0.5 ,127,0), max_line_width=np.inf))
     #out = np.vstack((inputdata,predictions))
     convert_back(out, midi_path)
 else:

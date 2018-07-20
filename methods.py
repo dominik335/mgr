@@ -93,7 +93,7 @@ def convert_back(roll,path):
     midi_out_path = path.split('.')[0] + "-enriched.midi"
     timeres = 20
     roll = np.transpose(roll)
-    roll= np.where(roll>0 ,127,0)
+    roll= np.where(roll>0.5 ,127,0)
     leading_zeros=np.zeros([40,roll.shape[1]])
     roll = np.vstack((leading_zeros, roll))
     bck = piano_roll_to_pretty_midi(roll, fs = timeres)

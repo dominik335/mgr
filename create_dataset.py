@@ -10,6 +10,7 @@ i = 0
 j = 0
 indir = '/home/dsabat/blog/classical/'
 indir = '/home/dsabat/danekom/clementi/'
+indir = '/home/dominik/Pulpit/MAGISTERKA/midi/midiPopover/'
 
 for root, dirs, filenames in os.walk(indir):
     for f in filenames:

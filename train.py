@@ -43,14 +43,19 @@ else:
     #FIXED SIZE
     hidden_layers = 4
     neurons = [input_cols*2, input_cols*3, input_cols*2, int(input_cols*1.5)]
-    neurons = [2500, 1000, 800, 400]
+    #neurons = [2500, 1000, 800, 400]
     #neurons = [150, 200,250, 100]
-    #neurons = [15, 20,25, 10]
+    neurons = [15, 20,25, 10]
 
 if use_previous_model:
     model = load_model("mymodel.h5")
     print("Model loaded ")
 else:
+
+    optimizer = 'adam'
+    lossfun = 'tf.nn.weighted_cross_entropy_with_logits'
+    lossfun = 'binary_crossentropy'
+
     print("Builing model...")
     model = Sequential()
     if hidden_layers == 1:
@@ -67,7 +72,7 @@ else:
             model.add(Dropout(dropout_rate))
 
         model.add(Dense(no_features, activation='sigmoid'))
-        model.compile(loss='binary_crossentropy', metrics=["accuracy"], optimizer='adam')
+        model.compile(loss=lossfun, metrics=["accuracy"], optimizer=optimizer)
         model.summary()
 
 filepath = "BestGRUWeights.h5"  # Best weights for sampling will be saved here.
@@ -83,8 +88,8 @@ print("Scanning files...")
 path, dirs, files = next(os.walk(dataset_path))
 file_count = len(files)
 
-#class_weight = {0: 1.,
-#                1: 5.}
+class_weight = {0: 1.,
+                1: 5.}
 
 csv_logger = CSVLogger('log.csv', append=True, separator=';')
 
@@ -116,6 +121,6 @@ for f in range(0,file_count): ################ FOR every file in dataset
     print("Splitted data...")
 
     history = model.fit(train_X, train_y, epochs=epochs, batch_size=batch, validation_data=(test_X, test_y),
-                        verbose=1, shuffle=True, callbacks=[checkpoint, csv_logger])
+                        verbose=1, shuffle=True, class_weight=class_weight,  callbacks=[checkpoint, csv_logger])
     model.save('mymodel.h5')
 
