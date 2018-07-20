@@ -15,9 +15,35 @@ from methods import *
 #misc
 import numpy as np
 import os
+import keras.backend.tensorflow_backend as tfb
+import tensorflow as tf
 
-if False: #True:
-    import tensorflow as tf
+POS_WEIGHT = 10  # multiplier for positive targets, needs to be tuned
+
+def weighted_binary_crossentropy(target, output):
+    """
+    Weighted binary crossentropy between an output tensor
+    and a target tensor. POS_WEIGHT is used as a multiplier
+    for the positive targets.
+
+    Combination of the following functions:
+    * keras.losses.binary_crossentropy
+    * keras.backend.tensorflow_backend.binary_crossentropy
+    * tf.nn.weighted_cross_entropy_with_logits
+    """
+    # transform back to logits
+    _epsilon = tfb._to_tensor(tfb.epsilon(), output.dtype.base_dtype)
+    output = tf.clip_by_value(output, _epsilon, 1 - _epsilon)
+    output = tf.log(output / (1 - output))
+    # compute weighted loss
+    loss = tf.nn.weighted_cross_entropy_with_logits(targets=target,
+                                                    logits=output,
+                                                    pos_weight=POS_WEIGHT)
+    return tf.reduce_mean(loss, axis=-1)
+
+
+#if False:
+if True:
     config = tf.ConfigProto()
     config.gpu_options.per_process_gpu_memory_fraction = 0.8
     session = tf.Session(config=config)
@@ -43,9 +69,9 @@ else:
     #FIXED SIZE
     hidden_layers = 4
     neurons = [input_cols*2, input_cols*3, input_cols*2, int(input_cols*1.5)]
-    #neurons = [2500, 1000, 800, 400]
+    neurons = [2500, 1400, 800, 400]
     #neurons = [150, 200,250, 100]
-    neurons = [15, 20,25, 10]
+    #neurons = [15, 20,25, 10]
 
 if use_previous_model:
     model = load_model("mymodel.h5")
@@ -53,8 +79,8 @@ if use_previous_model:
 else:
 
     optimizer = 'adam'
-    lossfun = 'tf.nn.weighted_cross_entropy_with_logits'
     lossfun = 'binary_crossentropy'
+    lossfun = weighted_binary_crossentropy
 
     print("Builing model...")
     model = Sequential()
@@ -76,7 +102,9 @@ else:
         model.summary()
 
 filepath = "BestGRUWeights.h5"  # Best weights for sampling will be saved here.
+filepath2 = "BestGRUWeights2.h5"  # Best weights for sampling will be saved here.
 checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+checkpoint2 = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
 
 #values = np.array([]).reshape(0, no_features)
 
@@ -121,6 +149,6 @@ for f in range(0,file_count): ################ FOR every file in dataset
     print("Splitted data...")
 
     history = model.fit(train_X, train_y, epochs=epochs, batch_size=batch, validation_data=(test_X, test_y),
-                        verbose=1, shuffle=True, class_weight=class_weight,  callbacks=[checkpoint, csv_logger])
+                        verbose=1, shuffle=True, callbacks=[checkpoint,checkpoint2, csv_logger])
     model.save('mymodel.h5')
 
