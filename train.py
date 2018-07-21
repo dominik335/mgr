@@ -83,7 +83,7 @@ else:
 filepath = "BestGRUWeights.h5"  # Best weights for sampling will be saved here.
 filepath2 = "BestGRUWeights2.h5"  # Best weights for sampling will be saved here.
 checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
-checkpoint2 = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
+checkpoint2 = ModelCheckpoint(filepath2, monitor='loss', verbose=1, save_best_only=True, mode='min')
 
 #values = np.array([]).reshape(0, no_features)
 
