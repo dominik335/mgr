@@ -20,26 +20,21 @@ from pandas import DataFrame
 from pandas import concat
 import tensorflow as tf
 
-#config = tf.ConfigProto()
-#config.gpu_options.per_process_gpu_memory_fraction = 0.5
-#set_session(tf.Session(config=config))
-
 from methods import *
 
-# client app
-
+# client
 steps = 3  # of simulation
 timesteps = 40
 no_features = 60
 input_cols = timesteps * no_features
 
-dir_model = "/home/dominik/Pulpit/MAGISTERKA/pobrane wagi/6/"
-midi_path = '/home/dominik/Pulpit/MAGISTERKA/testoweMidiInput/3.midi'
+dir_model = "/home/dominik/Pulpit/MAGISTERKA/pobrane wagi/7/"
+midi_path = '/home/dominik/Pulpit/MAGISTERKA/testoweMidiInput/4.midi'
 
 weight_path = dir_model + 'mymodel.h5'
-weight_path = dir_model + 'BestGRUWeights.h5'
+#weight_path = dir_model + 'BestGRUWeights.h5'
 
-model = load_model(weight_path)
+model = load_model(weight_path, custom_objects={ 'weighted_binary_crossentropy': weighted_binary_crossentropy})
 values = convert(midi_path)
 inputdata = values
 pred_input = values

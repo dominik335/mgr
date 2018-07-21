@@ -55,6 +55,12 @@ def piano_roll_to_pretty_midi(piano_roll, fs=100, program=0):
     return pm
 
 # convert series to supervised learning
+import keras.backend.tensorflow_backend as tfb
+import tensorflow as tf
+
+POS_WEIGHT = 10  # multiplier for positive targets, needs to be tuned
+
+
 def series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
 	n_vars = 1 if type(data) is list else data.shape[1]
 	df = DataFrame(data)
@@ -99,3 +105,23 @@ def convert_back(roll,path):
     bck = piano_roll_to_pretty_midi(roll, fs = timeres)
     bck.write(midi_out_path)
 
+def weighted_binary_crossentropy(target, output):
+    """
+    Weighted binary crossentropy between an output tensor
+    and a target tensor. POS_WEIGHT is used as a multiplier
+    for the positive targets.
+
+    Combination of the following functions:
+    * keras.losses.binary_crossentropy
+    * keras.backend.tensorflow_backend.binary_crossentropy
+    * tf.nn.weighted_cross_entropy_with_logits
+    """
+    # transform back to logits
+    _epsilon = tfb._to_tensor(tfb.epsilon(), output.dtype.base_dtype)
+    output = tf.clip_by_value(output, _epsilon, 1 - _epsilon)
+    output = tf.log(output / (1 - output))
+    # compute weighted loss
+    loss = tf.nn.weighted_cross_entropy_with_logits(targets=target,
+                                                    logits=output,
+                                                    pos_weight=POS_WEIGHT)
+    return tf.reduce_mean(loss, axis=-1)
