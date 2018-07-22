@@ -23,7 +23,7 @@ import tensorflow as tf
 from methods import *
 
 # client
-steps = 3  # of simulation
+steps = 6  # of simulation
 timesteps = 40
 no_features = 60
 input_cols = timesteps * no_features
@@ -64,7 +64,7 @@ for i in range(1, steps):
 out=predictions
 
 if len(predictions) > 0:
-    print(  np.array2string(np.where(predictions>=0.5 ,127,0), max_line_width=np.inf))
+    print(  np.array2string(np.where(predictions>=0.5 ,1,0), max_line_width=np.inf))
     #out = np.vstack((inputdata,predictions))
     convert_back(out, midi_path)
 else:

@@ -27,17 +27,19 @@ if True:
     config.gpu_options.per_process_gpu_memory_fraction = 0.8
     session = tf.Session(config=config)
 
-use_previous_model = 0
+use_previous_model = 1
 timesteps = 40
 no_features = 60
 batch = 750
 dropout_rate = 0.2
-epochs = 5
+epochs = 30
 input_cols = timesteps * no_features
+select_size = 0
 
-var_size = 0
+filepath = "BestGRUWeights.h5"  # Best weights for sampling will be saved here.
+filepath2 = "BestGRUWeights2.h5"  # Best weights for sampling will be saved here.
 
-if var_size:
+if select_size:
     hidden_layers = int(input("\nNumber of Hidden Layers (Minimum 1): "))
     neurons = []
     if hidden_layers == 0:
@@ -49,8 +51,7 @@ else:
     hidden_layers = 4
     neurons = [input_cols*2, input_cols*3, input_cols*2, int(input_cols*1.5)]
     neurons = [2000, 1400, 800, 400]
-    #neurons = [150, 200,250, 100]
-    neurons = [15, 20,25, 10]
+    #neurons = [15, 20,25, 10]
 
 if use_previous_model:
     model = load_model(weight_path, custom_objects={'weighted_binary_crossentropy': weighted_binary_crossentropy})
@@ -80,8 +81,7 @@ else:
         model.compile(loss=lossfun, metrics=["accuracy"], optimizer=optimizer)
         model.summary()
 
-filepath = "BestGRUWeights.h5"  # Best weights for sampling will be saved here.
-filepath2 = "BestGRUWeights2.h5"  # Best weights for sampling will be saved here.
+
 checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 checkpoint2 = ModelCheckpoint(filepath2, monitor='loss', verbose=1, save_best_only=True, mode='min')
 
@@ -94,9 +94,6 @@ print("Scanning files...")
 
 path, dirs, files = next(os.walk(dataset_path))
 file_count = len(files)
-
-class_weight = {0: 1.,
-                1: 5.}
 
 csv_logger = CSVLogger('log.csv', append=True, separator=';')
 
