@@ -118,8 +118,6 @@ for f in range(0,file_count): ################ FOR every file in dataset
     # split into input and outputs
     train_X, train_y = train[:, :input_cols], train[:, -no_features:]
     test_X, test_y = test[:, :input_cols], test[:, -no_features:]
-    #class_weight = class_weight.compute_class_weight('balanced',np.unique(train_y),train_y)
-    #print(type(class_weight))
     train_X = train_X.reshape((train_X.shape[0], timesteps, no_features))
     test_X = test_X.reshape((test_X.shape[0], timesteps, no_features))
     print("Splitted data...")
