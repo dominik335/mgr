@@ -54,7 +54,7 @@ else:
     #neurons = [15, 20,25, 10]
 
 if use_previous_model:
-    model = load_model(weight_path, custom_objects={'weighted_binary_crossentropy': weighted_binary_crossentropy})
+    model = load_model(filepath2, custom_objects={'weighted_binary_crossentropy': weighted_binary_crossentropy})
     print("Model loaded ")
 else:
 
