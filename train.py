@@ -59,7 +59,7 @@ else:
 
     optimizer = 'adam'
     lossfun = 'categorical_crossentropy'
-    lossfun = weighted_binary_crossentropy
+    #lossfun = weighted_binary_crossentropy
 
     print("Builing model...")
     model = Sequential()
@@ -81,7 +81,7 @@ else:
         model.summary()
 
 
-checkpoint = ModelCheckpoint(filepath, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 checkpoint2 = ModelCheckpoint(filepath2, monitor='loss', verbose=1, save_best_only=True, mode='min')
 
 #values = np.array([]).reshape(0, no_features)
