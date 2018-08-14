@@ -32,7 +32,7 @@ dir_model = "/home/dominik/Pulpit/MAGISTERKA/pobrane wagi/7/"
 midi_path = '/home/dominik/Pulpit/MAGISTERKA/testoweMidiInput/4.midi'
 
 weight_path = dir_model + 'mymodel.h5'
-#weight_path = dir_model + 'BestGRUWeights.h5'
+weight_path = dir_model + 'BestGRUWeights.h5'
 
 model = load_model(weight_path, custom_objects={ 'weighted_binary_crossentropy': weighted_binary_crossentropy})
 values = convert(midi_path)

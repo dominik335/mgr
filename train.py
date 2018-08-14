@@ -27,7 +27,7 @@ if True:
     config.gpu_options.per_process_gpu_memory_fraction = 0.8
     session = tf.Session(config=config)
 
-use_previous_model = 1
+use_previous_model = 0
 timesteps = 40
 no_features = 60
 batch = 750
@@ -48,9 +48,8 @@ if select_size:
         neurons.append(int(input("Number of Neurons in Hidden Layer " + str(i + 1) + ": ")))
 else:
     #FIXED SIZE
-    hidden_layers = 4
-    neurons = [input_cols*2, input_cols*3, input_cols*2, int(input_cols*1.5)]
-    neurons = [2000, 1400, 800, 400]
+    hidden_layers = 3
+    neurons = [200, 240, 200]
     #neurons = [15, 20,25, 10]
 
 if use_previous_model:
@@ -59,7 +58,7 @@ if use_previous_model:
 else:
 
     optimizer = 'adam'
-    lossfun = 'binary_crossentropy'
+    lossfun = 'categorical_crossentropy'
     lossfun = weighted_binary_crossentropy
 
     print("Builing model...")
