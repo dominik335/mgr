@@ -8,9 +8,7 @@ no_features = 60
 values = np.array([]).reshape(0, no_features).astype('bool')
 i = 0
 j = 0
-indir = '/home/dsabat/blog/classical/'
-indir = '/home/dsabat/danekom/clementi/'
-indir = '/home/dominik/Pulpit/MAGISTERKA/midi/midiPopover/'
+indir = '/home/dsabat/clementi/'
 
 for root, dirs, filenames in os.walk(indir):
     for f in filenames:
@@ -20,10 +18,10 @@ for root, dirs, filenames in os.walk(indir):
         values = np.vstack((values, convert(indir + f)))
 
         if (values.shape[0]>=200000):
-            np.save("/home/dsabat/datasety/" + str(j), values)
+            np.save("/home/dsabat/datasets/" + str(j), values)
             j=j+1
             values=None
             values = np.array([]).reshape(0, no_features)
 
-np.save("/home/dsabat/datasety/" + str(j), values)
+np.save("/home/dsabat/datasets/" + str(j), values)
 j=j+1
